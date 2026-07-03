@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   Menu, X, Search, ShoppingBag, ChevronRight, Phone,
   MessageCircle, ArrowDown, MapPin, Mail, Clock,
-  Instagram, Youtube, Check, Droplets, TreePine,
-  Sparkles, Citrus, Star
+  Instagram, Youtube, Check, Star
 } from "lucide-react";
+import { PRODUCTS } from "../data/products";
 
 // Intersection Observer Hook for fade-in animations
 function useIntersectionObserver(options: IntersectionObserverInit = {}) {
@@ -52,22 +52,6 @@ function FadeIn({ children, delay = 0, className = "", direction = "up" }: { chi
     </div>
   );
 }
-
-const PRODUCTS = [
-  { id: 1, name: "Oud Noir", notes: "ámbar, oud, sándalo", price: "$85.000", family: "Oriental", img: "fraganti-prod1.jpg", isNew: true },
-  { id: 2, name: "Fleur de Jasmin", notes: "jazmín, rosa, almizcle", price: "$72.000", family: "Floral", img: "fraganti-prod2.jpg" },
-  { id: 3, name: "Aventus Club", notes: "manzana, bergamota, cedro", price: "$95.000", family: "Fresca", img: "fraganti-prod3.jpg" },
-  { id: 4, name: "La Vie Est Belle", notes: "iris, pralinée, vainilla", price: "$78.000", family: "Floral Oriental", img: "fraganti-prod2.jpg" },
-  { id: 5, name: "Terre d'Hermès", notes: "pomelo, pimienta, vetiver", price: "$110.000", family: "Amaderada", img: "fraganti-prod3.jpg", isNew: true },
-  { id: 6, name: "Black Orchid", notes: "orquídea, vainilla, pachulí", price: "$92.000", family: "Oriental", img: "fraganti-prod1.jpg" },
-];
-
-const FAMILIES = [
-  { name: "Floral", notes: "Rosa, Jazmín, Peonía", icon: <Sparkles className="w-8 h-8 text-[#C9A96E]" /> },
-  { name: "Amaderado", notes: "Cedro, Sándalo, Vetiver", icon: <TreePine className="w-8 h-8 text-[#C9A96E]" /> },
-  { name: "Cítrico", notes: "Bergamota, Pomelo, Limón", icon: <Citrus className="w-8 h-8 text-[#C9A96E]" /> },
-  { name: "Oriental", notes: "Oud, Ámbar, Incienso", icon: <Droplets className="w-8 h-8 text-[#C9A96E]" /> }
-];
 
 const QUIZ_QUESTIONS = [
   {
@@ -151,7 +135,7 @@ export function Landing() {
 
   const filteredProducts = activeFilter === "Todos"
     ? PRODUCTS
-    : PRODUCTS.filter(p => p.family.includes(activeFilter) || p.family === activeFilter);
+    : PRODUCTS.filter(p => p.type === activeFilter || p.family.includes(activeFilter) || p.family === activeFilter);
 
   return (
     <div className="min-h-screen bg-[#F8F5F2] text-[#1A1A1A] font-poppins selection:bg-[#C9A96E] selection:text-white">
@@ -376,7 +360,7 @@ export function Landing() {
 
             {/* Filters */}
             <div className="flex flex-wrap justify-center gap-3 w-full custom-scrollbar pb-2">
-              {["Todos", "Oriental", "Floral", "Amaderada", "Fresca"].map(filter => (
+              {["Todos", "Árabe", "Diseñador", "Oriental", "Floral", "Amaderada", "Fresca"].map(filter => (
                 <button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
@@ -393,16 +377,16 @@ export function Landing() {
           </div>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
           {filteredProducts.map((product, index) => (
-            <FadeIn key={product.id} delay={index * 150} direction="up">
-              <div className="product-card group cursor-pointer bg-white rounded-lg p-6 flex flex-col h-full relative overflow-hidden">
+            <FadeIn key={product.id} delay={Math.min(index, 6) * 100} direction="up">
+              <div className="product-card group cursor-pointer bg-white rounded-lg p-5 flex flex-col h-full relative overflow-hidden">
                 {product.isNew && (
-                  <span className="absolute top-6 left-6 z-10 bg-[#C9A96E] text-[#1A1A1A] text-[10px] font-bold px-3 py-1 tracking-widest rounded-sm">
+                  <span className="absolute top-5 left-5 z-10 bg-[#C9A96E] text-[#1A1A1A] text-[10px] font-bold px-3 py-1 tracking-widest rounded-sm">
                     NUEVO
                   </span>
                 )}
-                <div className="product-image-container relative h-72 mb-8 bg-[#F5F5DC]/30 rounded-md overflow-hidden flex items-center justify-center">
+                <div className="product-image-container relative h-56 mb-6 bg-[#F5F5DC]/30 rounded-md overflow-hidden flex items-center justify-center">
                   <img
                     src={`/images/${product.img}`}
                     alt={product.name}
@@ -411,19 +395,19 @@ export function Landing() {
 
                   {/* Quick add overlay on hover */}
                   <div className="absolute inset-0 bg-[#1A1A1A]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
-                    <button className="bg-[#F8F5F2] text-[#1A1A1A] px-6 py-3 rounded-sm font-medium text-sm tracking-wide hover:bg-[#C9A96E] hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300">
+                    <button className="bg-[#F8F5F2] text-[#1A1A1A] px-5 py-2.5 rounded-sm font-medium text-xs tracking-wide hover:bg-[#C9A96E] hover:text-white transition-colors transform translate-y-4 group-hover:translate-y-0 duration-300">
                       VISTA RÁPIDA
                     </button>
                   </div>
                 </div>
 
                 <div className="flex flex-col flex-grow text-center">
-                  <span className="text-[#C9A96E] text-xs font-semibold tracking-widest uppercase mb-2">{product.family}</span>
-                  <h3 className="font-serif text-2xl text-[#1A1A1A] mb-1">{product.name}</h3>
-                  <p className="text-[#5A5A5A] text-sm italic mb-4 flex-grow font-serif">{product.notes}</p>
-                  <p className="text-[#1A1A1A] font-medium tracking-wide mb-6">{product.price}</p>
+                  <span className="text-[#C9A96E] text-[11px] font-semibold tracking-widest uppercase mb-1">{product.type} · {product.family}</span>
+                  <h3 className="font-serif text-xl text-[#1A1A1A] mb-1">{product.name}</h3>
+                  <p className="text-[#5A5A5A] text-xs italic mb-3 flex-grow font-serif">{product.notes}</p>
+                  <p className="text-[#1A1A1A] font-medium tracking-wide mb-4 text-sm">{product.price}</p>
 
-                  <button className="w-full btn-outline py-3 rounded-sm text-sm tracking-widest font-medium group-hover:bg-[#1A1A1A] group-hover:text-[#F8F5F2]">
+                  <button className="w-full btn-outline py-2.5 rounded-sm text-xs tracking-widest font-medium group-hover:bg-[#1A1A1A] group-hover:text-[#F8F5F2]">
                     AGREGAR AL CARRITO
                   </button>
                 </div>
@@ -441,7 +425,7 @@ export function Landing() {
       </section>
 
       {/* EXPERIENCIA SENSORIAL */}
-      <section className="relative py-32 overflow-hidden bg-[#1A1A1A]">
+      <section className="relative py-20 overflow-hidden bg-[#1A1A1A]">
         <div className="absolute inset-0">
           <img
             src="/images/fraganti-sensory.jpg"
@@ -453,28 +437,10 @@ export function Landing() {
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 text-center">
           <FadeIn>
-            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-[#F8F5F2] font-light leading-snug mb-16 max-w-4xl mx-auto">
+            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-[#F8F5F2] font-light leading-snug max-w-4xl mx-auto">
               Cada aroma es una <i className="italic text-[#C9A96E]">memoria</i>.<br />
               Cada fragancia, una <i className="italic text-[#C9A96E]">emoción</i>.
             </h2>
-          </FadeIn>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            {FAMILIES.map((family, index) => (
-              <FadeIn key={family.name} delay={index * 150} className="bg-[#1C1C1C]/60 backdrop-blur-md border border-[#333] p-8 rounded-lg flex flex-col items-center text-center hover:border-[#C9A96E]/50 transition-colors duration-300">
-                <div className="mb-6 bg-[#2A2A2A] w-16 h-16 rounded-full flex items-center justify-center">
-                  {family.icon}
-                </div>
-                <h3 className="font-serif text-xl text-[#F8F5F2] mb-2">{family.name}</h3>
-                <p className="text-[#A0A0A0] text-sm">{family.notes}</p>
-              </FadeIn>
-            ))}
-          </div>
-
-          <FadeIn delay={600}>
-            <button className="btn-outline-cream px-10 py-4 rounded-sm font-medium tracking-widest text-sm hover:border-[#C9A96E] hover:text-[#C9A96E] hover:bg-transparent">
-              DESCUBRE TU FAMILIA OLFATIVA
-            </button>
           </FadeIn>
         </div>
       </section>
@@ -525,7 +491,7 @@ export function Landing() {
                   <div className="relative">
                     <div className="absolute inset-0 bg-[#C9A96E] rounded-full blur-[60px] opacity-20"></div>
                     <img
-                      src={`/images/${quizAnswers[3] === "Floral" ? "fraganti-prod2.jpg" : quizAnswers[3] === "Amaderado" ? "fraganti-prod3.jpg" : "fraganti-prod1.jpg"}`}
+                      src={`/images/${quizAnswers[3] === "Floral" ? "fraganti-prod-disenador-floral.jpg" : quizAnswers[3] === "Amaderado" ? "fraganti-prod-disenador-amaderada.jpg" : "fraganti-prod-arabe-oriental.jpg"}`}
                       alt="Tu perfume ideal"
                       className="w-48 h-auto relative z-10 mix-blend-multiply drop-shadow-2xl"
                     />
